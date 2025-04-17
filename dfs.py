@@ -1,13 +1,21 @@
-def dfs(graph, start_node, visited=None):
+def dfs_path_length(graph, start_node, end_node, visited=None, path=None):
     if visited is None:
         visited = set()
+    if path is None:
+        path = [start_node]
+
     visited.add(start_node)
-    path = [start_node]
+
+    if start_node == end_node:
+        return len(path) -1  
     for neighbor in graph[start_node]:
         if neighbor not in visited:
-            path.extend(dfs(graph, neighbor, visited))
-            break 
-    return path
+            new_path = path + [neighbor]
+            result = dfs_path_length(graph, neighbor, end_node, visited, new_path)
+            if result is not None:
+                return result
+
+    return None  
 if __name__ == '__main__':
     edges = [(4, 2), (1, 3), (2, 4)]
     graph = {}
@@ -18,7 +26,8 @@ if __name__ == '__main__':
             graph[v] = []
         graph[u].append(v)
         graph[v].append(u)  
-    print(f"Graph representation: {graph}")
-    start_node = 1
-    path = dfs(graph, start_node)
-    print(f"DFS обход из вершины {start_node}: {path}")
+
+    start_node = 2
+    end_node = 4
+    path_length = dfs_path_length(graph, start_node, end_node)
+    print(f"Длина пути от вершины {start_node} до вершины {end_node}: {path_length}")
